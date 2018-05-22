@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import 'assets/vendor/particles.js/particles.min.js'
 
 declare var particlesJS;
+declare var $;
 
 @Component({
   selector: 'app-automate-test',
@@ -14,6 +14,7 @@ export class AutomateTestComponent implements OnInit {
 
   ngOnInit() {
     particlesJS.load('AutomateTest', 'assets/javascript/particlesjs-AutomateTest.json');
+    $("#Authen").modal({backdrop: 'static', keyboard: false});
   }
 
 }

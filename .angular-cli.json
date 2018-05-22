@@ -19,9 +19,27 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
+        "assets/vendor/pace/pace.min.css",
+        "assets/vendor/bootstrap/css/bootstrap.min.css",
+        "assets/vendor/open-iconic/css/open-iconic-bootstrap.min.css",
+        "assets/vendor/font-awesome/css/fontawesome-all.min.css",
+        "assets/vendor/flatpickr/flatpickr.min.css",
+        "assets/stylesheets/main.min.css",
+        "assets/stylesheets/custom.css",
         "styles.css"
       ],
-      "scripts": [],
+      "scripts": [
+        "assets/vendor/particles.js/particles.min.js",
+        "assets/vendor/pace/pace.min.js",
+        "assets/vendor/jquery/jquery.min.js",
+        "assets/vendor/bootstrap/js/popper.min.js",
+        "assets/vendor/bootstrap/js/bootstrap.min.js",
+        "assets/vendor/stacked-menu/stacked-menu.min.js",
+        "assets/vendor/perfect-scrollbar/perfect-scrollbar.min.js",
+        "assets/vendor/flatpickr/flatpickr.min.js",
+        "assets/vendor/jquery.easy-pie-chart/jquery.easypiechart.min.js",
+        "assets/vendor/chart.js/Chart.min.js"
+      ],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
