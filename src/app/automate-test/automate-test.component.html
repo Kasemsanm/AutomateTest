@@ -1,41 +1,25 @@
-<style>
-    .modal {
-        text-align: center;
-        padding: 0 !important;
-    }
-
-    .modal:before {
-        content: '';
-        display: inline-block;
-        height: 100%;
-        vertical-align: middle;
-        margin-right: -4px;
-    }
-
-    .modal-dialog {
-        display: inline-block;
-        text-align: left;
-        vertical-align: middle;
-    }
-</style>
-<main id="AutomateTest" class="empty-state empty-state-fullpage text-back" style="background: #1b1b1b;">
+<!-- .app-main -->
+<main class="app has-fullwidth">
     <div id="Authen" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Authentication</h5>
                 </div>
                 <div class="modal-body">
-                    <form class="mx-3 mb-3">
+                    <form class="mx-3 mb-3" #SinginForm="ngForm" (ngSubmit)="Singin(SinginForm)">
                         <div class="form-group">
+                            <h5 class="text-warning">{{error}}</h5>
                             <div class="form-label-group">
-                                <input type="text" id="inputUser" class="form-control" placeholder="Username" required="" autofocus="">
-                                <label for="inputUser">Username</label>
+                                <input type="email" id="inputUser" [(ngModel)]="Email" name="Email" class="form-control" placeholder="Email" autofocus="true"
+                                    required>
+                                <label for="inputUser">Email</label>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="form-label-group">
-                                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+                                <input type="password" id="inputPassword" [(ngModel)]="Password" name="Password" class="form-control" placeholder="Password"
+                                    required>
                                 <label for="inputPassword">Password</label>
                             </div>
                         </div>
@@ -43,13 +27,171 @@
                             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
                         </div>
                         <div class="text-center pt-3">
-                            <a href="auth-recovery-username.html" class="link">Forgot Username?</a>
-                            <span class="mx-2">·</span>
-                            <a href="auth-recovery-password.html" class="link">Forgot Password?</a>
+                            <button (click)="RecoverPass()" class="btn btn-block btn-light">Forgot Password?</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+    <div id="RecoverPassword" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Recover Password</h5>
+                </div>
+                <div class="modal-body">
+                    <form class="auth-form auth-form-reflow">
+                        <div class="text-center mb-4">
+                            <div class="mb-4">
+                                <h1 class="h3"> Reset Your Password </h1>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label class="d-block text-left" for="inputUser">Username</label>
+                                <input type="text" class="form-control form-control-lg" required="" autofocus="">
+                                <p class="text-muted">
+                                    <small>We'll send password reset link to your email.</small>
+                                </p>
+                            </div>
+                            <div class="d-block d-md-inline-block mb-2">
+                                <button class="btn btn-lg btn-block btn-primary" type="submit">Reset Password</button>
+                            </div>
+                            <div class="d-block d-md-inline-block">
+                                <button (click)="BlackToSingin()" class="btn btn-block btn-light">Return to signin</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="AddTest" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Test</h5>
+                </div>
+                <div class="modal-body">
+                    <form #AddForm="NgForm" (ngSubmit)="AddNewTest(AddForm)">
+                        <div class="text-center mb-4">
+                            <div class="form-group mb-4">
+                                <label class="d-block text-left" for="inputUser">Test Title</label>
+                                <input type="text" [(ngModel)]="Title" name="Title" class="form-control form-control-lg" required="true" autofocus="true">
+                                <p>{{AddTestError}}</p>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="TestCreate" [(ngModel)]="Script" name="Script" class="form-control" placeholder="Start typing with @" rows="10"></textarea>
+                            </div>
+                            <div class="d-block d-md-inline-block mb-2">
+                                <button class="btn btn-lg btn-block btn-primary" type="submit">Save</button>
+                            </div>
+                            <div class="d-block d-md-inline-block mb-2">
+                                <button class="btn btn-lg btn-block btn-warning" data-toggle="modal" data-target="#AddTest" type="button">Close</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- .wrapper -->
+    <div id="AutomateTest">
+    </div>
+    <div class="empty-state empty-state-fullpage text-back" style="background: #1b1b1b;">
+        <!-- .page -->
+        <div id="AutomateMain" class="page">
+            <!-- .page-inner -->
+            <div class="page-inner">
+                <!-- floating action -->
+                <button type="button" class="btn btn-success btn-floated" data-toggle="modal" data-target="#AddTest">
+                    <span class="fa fa-plus"></span>
+                </button>
+                <!-- /floating action -->
+                <!-- .page-section -->
+                <div class="page-section">
+                    <!-- .card -->
+                    <section class="card card-fluid" hidden>
+                        <!-- .card-body -->
+                        <div class="card-body">
+                            <!-- .form-group -->
+                            <div class="form-group">
+                                <!-- .input-group -->
+                                <div class="input-group input-group-alt">
+                                    <!-- .input-group-prepend -->
+                                    <div class="input-group-prepend">
+                                        <select id="filterBy" class="custom-select">
+                                            <option value='' selected> Filter By </option>
+                                            <option value="1"> Product </option>
+                                            <option value="2"> Inventory </option>
+                                            <option value="3"> Variants </option>
+                                            <option value="4"> Prices </option>
+                                            <option value="5"> Sales </option>
+                                        </select>
+                                    </div>
+                                    <!-- /.input-group-prepend -->
+                                    <!-- .input-group -->
+                                    <div class="input-group has-clearable">
+                                        <button id="clear-search" type="button" class="close" aria-label="Close">
+                                            <span aria-hidden="true">
+                                                <i class="fa fa-times-circle"></i>
+                                            </span>
+                                        </button>
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <span class="oi oi-magnifying-glass"></span>
+                                            </span>
+                                        </div>
+                                        <input id="table-search" type="text" class="form-control" placeholder="Search products"> </div>
+                                    <!-- /.input-group -->
+                                </div>
+                                <!-- /.input-group -->
+                            </div>
+                            <!-- /.form-group -->
+                            <!-- .table -->
+                            <table id="myTable" class="table">
+                                <!-- thead -->
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" style="min-width: 320px;">
+                                            <div class="thead-dd dropdown">
+                                                <span class="custom-control custom-control-nolabel custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="check-handle">
+                                                    <label class="custom-control-label" for="check-handle"></label>
+                                                </span>
+                                                <div class="thead-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <span class="caret"></span>
+                                                </div>
+                                                <div class="dropdown-arrow"></div>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="#">Select all</a>
+                                                    <a class="dropdown-item" href="#">Unselect all</a>
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item" href="#">Bulk remove</a>
+                                                    <a class="dropdown-item" href="#">Bulk edit</a>
+                                                    <a class="dropdown-item" href="#">Separate actions</a>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th> Test Name </th>
+                                        <th> Prject </th>
+                                        <th> Status </th>
+                                        <th style="width:100px; min-width:100px;"> &nbsp; </th>
+                                    </tr>
+                                </thead>
+                                <!-- /thead -->
+                            </table>
+                            <!-- /.table -->
+                        </div>
+                        <!-- /.card-body -->
+                    </section>
+                    <!-- /.card -->
+                </div>
+                <!-- /.page-section -->
+            </div>
+            <!-- /.page-inner -->
+        </div>
+        <!-- /.page -->
+    </div>
+    <!-- /.wrapper -->
 </main>
+<!-- /.app-main -->

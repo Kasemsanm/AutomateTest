@@ -22,6 +22,7 @@
         "assets/vendor/pace/pace.min.css",
         "assets/vendor/bootstrap/css/bootstrap.min.css",
         "assets/vendor/open-iconic/css/open-iconic-bootstrap.min.css",
+        "assets/vendor/datatables/extensions/buttons/buttons.bootstrap4.min.css",
         "assets/vendor/font-awesome/css/fontawesome-all.min.css",
         "assets/vendor/flatpickr/flatpickr.min.css",
         "assets/stylesheets/main.min.css",
@@ -38,7 +39,13 @@
         "assets/vendor/perfect-scrollbar/perfect-scrollbar.min.js",
         "assets/vendor/flatpickr/flatpickr.min.js",
         "assets/vendor/jquery.easy-pie-chart/jquery.easypiechart.min.js",
-        "assets/vendor/chart.js/Chart.min.js"
+        "assets/vendor/chart.js/Chart.min.js",
+        "assets/vendor/datatables/jquery.dataTables.min.js",
+        "assets/vendor/datatables/extensions/buttons/dataTables.buttons.min.js",
+        "assets/vendor/datatables/extensions/buttons/buttons.bootstrap4.min.js",
+        "assets/vendor/datatables/extensions/buttons/buttons.html5.min.js",
+        "assets/vendor/datatables/extensions/buttons/buttons.print.min.js",
+        "assets/javascript/pages/dataTables.bootstrap.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
