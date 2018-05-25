@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { AutomateTestComponent } from './automate-test/automate-test.component';
 import { AuthenticationService } from './services/authentication.service';
 import { FirebaseService } from './services/firebase.service';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { FirebaseService } from './services/firebase.service';
     routes,
     AngularFireModule.initializeApp(firebase_config),
     AngularFireAuthModule,
+    AngularFireDatabaseModule,
     FormsModule
   ],
   providers: [AuthenticationService,FirebaseService],

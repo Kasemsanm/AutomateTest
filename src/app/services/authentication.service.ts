@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { Observable } from 'rxjs/Rx';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/take';
 
 @Injectable()
 export class AuthenticationService {
@@ -23,12 +19,6 @@ export class AuthenticationService {
   }
 
   Authenticated(){
-    Observable.from(this.afAuth.authState)
-      .take(1)
-      .map(state => !!state)
-      .do(authenticated => {
-      return authenticated;      
-    })
-    return false
+    return this.afAuth.authState;
   }
 }

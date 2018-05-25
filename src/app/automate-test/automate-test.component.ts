@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { NgForm } from '@angular/forms';
+import { FirebaseService, TestItem, ProjectItem } from '../services/firebase.service';
 
 declare var particlesJS;
 declare var $;
@@ -12,157 +13,102 @@ declare var $;
 })
 export class AutomateTestComponent implements OnInit {
 
-  constructor(private Auth:AuthenticationService) { }
-  error:string;
-  AddTestError:string;
+  constructor(private Auth: AuthenticationService, private fdb: FirebaseService) { }
+  error: string;
+  AddTestError: string;
+  pid: string;
+  selectItem: boolean = false;
+  Projects: any;
+  projectName: string;
   ngOnInit() {
-    if(this.Auth.Authenticated()){
-      $("#Authen").modal({backdrop: 'static', keyboard: false});
-    }
-    particlesJS.load('AutomateTest', 'assets/javascript/particlesjs-AutomateTest.json');
-
-    var dataTablesDemo = {
-      init: function init() {
-    
-        this.bindUIActions();
-      },
-      bindUIActions: function bindUIActions() {
-    
-        // event handlers
-        this.table = this.handleDataTables();
-        this.handleSearchRecords();
-        this.handleSelecter();
-        this.handleClearSelected();
-      },
-      handleDataTables: function handleDataTables() {
-        return $('#myTable').DataTable({
-          language: {
-            paginate: {
-              previous: '<i class="fa fa-lg fa-angle-left"></i>',
-              next: '<i class="fa fa-lg fa-angle-right"></i>'
-            }
-          },
-          autoWidth: false,
-          ajax: 'assets/data/products.json',
-          deferRender: true,
-          order: [1, 'asc'],
-          columns: [{ data: 'id', className: 'align-middle', orderable: false, searchable: false }, { data: 'name', className: 'align-middle' }, { data: 'inventory', className: 'align-middle' }, { data: 'variant', className: 'align-middle' }, { data: 'prices', className: 'align-middle' }, { data: 'sales', className: 'align-middle' }, { data: 'id', className: 'align-middle text-right', orderable: false, searchable: false }],
-          columnDefs: [{
-            targets: 0,
-            render: function render(data, type, row, meta) {
-              return '<div class="table-custom-control custom-control custom-checkbox pl-3">\n            <input type="checkbox" class="custom-control-input" name="selectedRow[]" id="p' + row.id + '" value="' + row.id + '">\n            <label class="custom-control-label" for="p' + row.id + '"></label>\n          </div>';
-            }
-          }, {
-            targets: 1,
-            render: function render(data, type, row, meta) {
-              return '<a href="#' + row.id + '" class="tile tile-img mr-1">\n            <img class="img-fluid" src="assets/images/dummy/img-' + row.img + '.jpg" alt="Card image cap">\n          </a>\n          <a href="#' + row.id + '">' + row.name + '</a>';
-            }
-          }, {
-            targets: 6,
-            render: function render(data, type, row, meta) {
-              return '<a class="btn btn-sm btn-secondary" href="#' + data + '"><i class="far fa-trash-alt"></i></a>';
-            }
-          }]
-        });
-      },
-      handleSearchRecords: function handleSearchRecords() {
-        var self = this;
-    
-        $('#table-search, #filterBy').on('keyup change focus', function (e) {
-          var filterBy = $('#filterBy').val();
-          var hasFilter = filterBy !== '';
-          var value = $('#table-search').val();
-    
-          // clear selected rows
-          if (value.length && (e.type === 'keyup' || e.type === 'change')) {
-            self.clearSelectedRows();
-          }
-    
-          // reset search term
-          self.table.search('').columns().search('').draw();
-    
-          if (hasFilter) {
-            self.table.columns(filterBy).search(value).draw();
-          } else {
-            self.table.search(value).draw();
-          }
-        });
-      },
-      handleSelecter: function handleSelecter() {
-        var self = this;
-    
-        $(document).on('change', '#check-handle', function () {
-          var isChecked = $(this).prop('checked');
-          $('input[name="selectedRow[]"]').prop('checked', isChecked);
-    
-          // get info
-          self.getSelectedInfo();
-        }).on('change', 'input[name="selectedRow[]"]', function () {
-          var $selectors = $('input[name="selectedRow[]"]');
-          var $selectedRow = $('input[name="selectedRow[]"]:checked').length;
-          var prop = $selectedRow === $selectors.length ? 'checked' : 'indeterminate';
-    
-          // reset props
-          $('#check-handle').prop('indeterminate', false).prop('checked', false);
-    
-          if ($selectedRow) {
-            $('#check-handle').prop(prop, true);
-          }
-    
-          // get info
-          self.getSelectedInfo();
-        });
-      },
-      handleClearSelected: function handleClearSelected() {
-        var self = this;
-        // clear selected rows
-        $('#myTable').on('page.dt', () => {
-          self.clearSelectedRows();
-        });
-        $('#clear-search').on('click', function () {
-          self.clearSelectedRows();
-        });
-      },
-      getSelectedInfo: function getSelectedInfo() {
-        var $selectedRow = $('input[name="selectedRow[]"]:checked').length;
-        var $info = $('.thead-btn');
-        var $badge = $('<span/>').addClass('selected-row-info text-muted pl-1').text($selectedRow + ' selected');
-        // remove existing info
-        $('.selected-row-info').remove();
-        // add current info
-        if ($selectedRow) {
-          $info.prepend($badge);
-        }
-      },
-      clearSelectedRows: function clearSelectedRows() {
-        $('#check-handle').prop('indeterminate', false).prop('checked', false).trigger('change');
+    $("#Projects").hide();
+    this.Auth.Authenticated().subscribe(val => {
+      if (val) {
+        $("#Projects").show();
+        this.GetProject();
+      } else if (this.Auth.Authenticated()) {
+        $("#Authen").modal({ backdrop: 'static', keyboard: false });
       }
-    };
-    
-    dataTablesDemo.init();
+    })
+    particlesJS.load('AutomateTest', 'assets/javascript/particlesjs-AutomateTest.json');
   }
 
-  Singin(Data:NgForm){
-    try{
-      this.Auth.Singin(Data.value["Email"],Data.value["Password"]).then(
+  Singin(Data: NgForm) {
+    try {
+      this.Auth.Singin(Data.value["Email"], Data.value["Password"]).then(
         (success) => {
           $("#Authen").modal('hide');
-      }).catch(
+          $("#Projects").show();
+          this.GetProject();
+        }).catch(
         (err) => {
           this.error = err;
         }
-      )
-    }catch{
-      
+        )
+    } catch{
+
     }
-
   }
 
-  RecoverPass(){
-    $("#RecoverPassword").modal({backdrop: 'static', keyboard: false});
+  SingOut() {
+    this.Auth.Singout().then(
+      (success) => {
+        $("#Authen").modal({ backdrop: 'static', keyboard: false });
+      }).catch(
+      (err) => {
+        this.AddTestError = err;
+      });
   }
 
-  BlackToSingin(){
+  AddNewTest(newTestForm: NgForm) {
+    let newTest: TestItem = new TestItem();
+    newTest.title = newTestForm.value["Title"];
+    newTest.script = newTestForm.value["Script"];
+    newTest.status = "Not Tested";
+    try {
+      this.fdb.AddNewTest(this.pid, newTest)
+      $("#AddTest").modal("hide");
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  AddNewProject(newProjectForm: NgForm) {
+    if (this.projectName != "") {
+      let newProject = new ProjectItem();
+      newProject.projectName = newProjectForm.value["projectName"];
+      newProject.proportion = "0/0";
+      newProject.status = "Not completed";
+      try {
+        this.fdb.AddNewProject(newProject)
+        $("#AddProject").modal("hide");
+        this.projectName = "";
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    else{
+
+    }
+  }
+
+  GetProject() {
+    this.Projects = this.fdb.GetProjects();
+  }
+
+  AddItem() {
+    if (this.selectItem) {
+      $("#AddTest").modal({ backdrop: 'static', keyboard: false });
+    } else {
+      $("#AddProject").modal({ backdrop: 'static', keyboard: false });
+    }
+  }
+
+  RecoverPass() {
+    $("#RecoverPassword").modal({ backdrop: 'static', keyboard: false });
+  }
+
+  BlackToSingin() {
     $("#RecoverPassword").modal('hide');
   }
 }
