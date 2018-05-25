@@ -17,11 +17,12 @@ export class AutomateTestComponent implements OnInit {
   error: string;
   AddTestError: string;
   pid: string;
-  selectItem: boolean = false;
   Projects: any;
+  Tests:any;
   projectName: string;
   ngOnInit() {
     $("#Projects").hide();
+    $("#Tests").hide();
     this.Auth.Authenticated().subscribe(val => {
       if (val) {
         $("#Projects").show();
@@ -65,8 +66,9 @@ export class AutomateTestComponent implements OnInit {
     newTest.title = newTestForm.value["Title"];
     newTest.script = newTestForm.value["Script"];
     newTest.status = "Not Tested";
+    console.log(this.pid)
     try {
-      this.fdb.AddNewTest(this.pid, newTest)
+      this.fdb.AddNewTest(this.pid,newTest);
       $("#AddTest").modal("hide");
     } catch (err) {
       console.log(err);
@@ -103,13 +105,31 @@ export class AutomateTestComponent implements OnInit {
       )
   }
 
+  RemoveTest(key:string){
+    this.fdb.RemoveTest(this.pid,key).then(
+      (success) => {
+
+      }).catch(
+        (err) => {
+          console.log(err);
+        }
+      )
+  }
+
   GetProject() {
     this.Projects = this.fdb.GetProjects();
     $("ProjectTable").DataTable();
   }
 
+  GetTests(pid:string) {
+    this.Tests = this.fdb.GetTests(pid);
+    this.pid = pid;
+    $("#Projects").hide();
+    $("#Tests").show();
+  }
+
   AddItem() {
-    if (this.selectItem) {
+    if (this.pid != null) {
       $("#AddTest").modal({ backdrop: 'static', keyboard: false });
     } else {
       $("#AddProject").modal({ backdrop: 'static', keyboard: false });

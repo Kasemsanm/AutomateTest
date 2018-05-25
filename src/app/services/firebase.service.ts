@@ -47,11 +47,23 @@ export class FirebaseService {
   }
 
   GetTests(pid: string) {
-    return this.db.list(this.uid + "/Porjects/" + pid + "/Tests/")
+    return this.db.list(this.uid + "/Porjects/" + pid + "/Tests/").valueChanges();
   }
 
   AddNewTest(pid: string, newTest: TestItem) {
-    return this.db.list(this.uid + "/Porjects/" + pid + "/Tests/").push(newTest);
+    let TestRef$ = this.db.list(this.uid + "/Porjects/" + pid + "/Tests/");
+    return TestRef$.push(newTest).then(item => {
+      newTest.key = item.key;
+      TestRef$.update(item.key, newTest)
+    });
+  }
+
+  RemoveTest(pid: string, key:string){
+    return this.db.list(this.uid + "/Porjects/" + pid + "/Tests/").remove(key);
+  }
+
+  UpdateTest(pid: string, key:string,newItem:ProjectItem){
+    return this.db.list(this.uid + "/Porjects/" + pid + "/Tests/").update(key,newItem);
   }
 
 }
