@@ -5,6 +5,7 @@ import { FirebaseService, TestItem, ProjectItem } from '../services/firebase.ser
 
 declare var particlesJS;
 declare var $;
+declare var ace;
 
 @Component({
   selector: 'app-automate-test',
@@ -18,14 +19,15 @@ export class AutomateTestComponent implements OnInit {
   AddTestError: string;
   pid: string;
   Projects: any;
-  Tests:any;
+  Tests: any;
   projectName: string;
   ngOnInit() {
     $("#Projects").hide();
     $("#Tests").hide();
-    this.Auth.Authenticated().subscribe(val => {
+    this.Auth.Authenticated().subscribe(async val => {
       if (val) {
         $("#Projects").show();
+        await this.fdb.GetUserID();
         this.GetProject();
       } else if (this.Auth.Authenticated()) {
         $("#Authen").modal({ backdrop: 'static', keyboard: false });
@@ -37,18 +39,23 @@ export class AutomateTestComponent implements OnInit {
   Singin(Data: NgForm) {
     try {
       this.Auth.Singin(Data.value["Email"], Data.value["Password"]).then(
-        (success) => {
+        async (success) => {
           $("#Authen").modal('hide');
           $("#Projects").show();
+          await this.fdb.GetUserID();
           this.GetProject();
         }).catch(
-        (err) => {
-          this.error = err;
-        }
+          (err) => {
+            this.error = err;
+          }
         )
     } catch{
 
     }
+  }
+
+  async TestRunAutomateTest() {
+
   }
 
   SingOut() {
@@ -56,9 +63,9 @@ export class AutomateTestComponent implements OnInit {
       (success) => {
         $("#Authen").modal({ backdrop: 'static', keyboard: false });
       }).catch(
-      (err) => {
-        this.AddTestError = err;
-      });
+        (err) => {
+          this.AddTestError = err;
+        });
   }
 
   AddNewTest(newTestForm: NgForm) {
@@ -68,7 +75,7 @@ export class AutomateTestComponent implements OnInit {
     newTest.status = "Not Tested";
     console.log(this.pid)
     try {
-      this.fdb.AddNewTest(this.pid,newTest);
+      this.fdb.AddNewTest(this.pid, newTest);
       $("#AddTest").modal("hide");
     } catch (err) {
       console.log(err);
@@ -89,12 +96,12 @@ export class AutomateTestComponent implements OnInit {
         console.log(err);
       }
     }
-    else{
+    else {
 
     }
   }
 
-  RemoveProject(key:string){
+  RemoveProject(key: string) {
     this.fdb.RemoveProject(key).then(
       (success) => {
 
@@ -105,8 +112,8 @@ export class AutomateTestComponent implements OnInit {
       )
   }
 
-  RemoveTest(key:string){
-    this.fdb.RemoveTest(this.pid,key).then(
+  RemoveTest(key: string) {
+    this.fdb.RemoveTest(this.pid, key).then(
       (success) => {
 
       }).catch(
@@ -121,7 +128,7 @@ export class AutomateTestComponent implements OnInit {
     $("ProjectTable").DataTable();
   }
 
-  GetTests(pid:string) {
+  GetTests(pid: string) {
     this.Tests = this.fdb.GetTests(pid);
     this.pid = pid;
     $("#Projects").hide();

@@ -24,6 +24,7 @@
     "angularfire2": "^5.0.0-rc.9",
     "balanced-match": "^1.0.0",
     "brace-expansion": "^1.1.11",
+    "child_process": "^1.0.2",
     "core-js": "^2.4.1",
     "firebase": "^5.0.3",
     "minimatch": "^3.0.4",

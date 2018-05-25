@@ -21,9 +21,6 @@ export class FirebaseService {
 
   uid: string;
   constructor(private db: AngularFireDatabase, private afAuth: AngularFireAuth) {
-    afAuth.authState.subscribe((val) => {
-      this.uid = val.uid;
-    })
   }
 
   GetProjects() {
@@ -36,6 +33,12 @@ export class FirebaseService {
       newProject.key = item.key;
       ProjectRef$.update(item.key, newProject)
     });
+  }
+
+  GetUserID(){
+    this.afAuth.authState.subscribe((val) => {
+      this.uid = val.uid;
+    })
   }
 
   RemoveProject(key:string){
