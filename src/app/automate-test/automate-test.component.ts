@@ -92,8 +92,20 @@ export class AutomateTestComponent implements OnInit {
     }
   }
 
+  RemoveProject(key:string){
+    this.fdb.RemoveProject(key).then(
+      (success) => {
+
+      }).catch(
+        (err) => {
+          console.log(err);
+        }
+      )
+  }
+
   GetProject() {
     this.Projects = this.fdb.GetProjects();
+    $("ProjectTable").DataTable();
   }
 
   AddItem() {

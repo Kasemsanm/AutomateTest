@@ -174,7 +174,7 @@
                             </div>
                             <!-- /.form-group -->
                             <!-- .table -->
-                            <table id="myTable" class="table">
+                            <table id="ProjectTable" class="table">
                                 <!-- thead -->
                                 <thead>
                                     <tr>
@@ -189,12 +189,12 @@
                                                 </div>
                                                 <div class="dropdown-arrow"></div>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="#">Select all</a>
-                                                    <a class="dropdown-item" href="#">Unselect all</a>
+                                                    <a class="dropdown-item" >Select all</a>
+                                                    <a class="dropdown-item" >Unselect all</a>
                                                     <div class="dropdown-divider"></div>
-                                                    <a class="dropdown-item" href="#">Bulk remove</a>
-                                                    <a class="dropdown-item" href="#">Bulk edit</a>
-                                                    <a class="dropdown-item" href="#">Separate actions</a>
+                                                    <a class="dropdown-item" >Bulk remove</a>
+                                                    <a class="dropdown-item" >Bulk edit</a>
+                                                    <a class="dropdown-item" >Separate actions</a>
                                                 </div>
                                             </div>
                                         </th>
@@ -215,9 +215,9 @@
                                     <td>{{item.proportion}}</td>
                                     <td>{{item.status}}</td>
                                     <td>
-                                        <a class="btn btn-sm btn-secondary" href="#{{item.key}}">
+                                        <button class="btn btn-sm btn-secondary" (click)="RemoveProject(item.key)">
                                             <i class="far fa-trash-alt"></i>
-                                        </a>
+                                        </button>
                                     </td>
                                 </tr>
                             </table>

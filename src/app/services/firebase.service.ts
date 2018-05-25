@@ -38,6 +38,14 @@ export class FirebaseService {
     });
   }
 
+  RemoveProject(key:string){
+    return this.db.list(this.uid + "/Porjects/").remove(key);
+  }
+
+  UpdateProject(key:string,newItem:ProjectItem){
+    return this.db.list(this.uid + "/Porjects/").update(key,newItem);
+  }
+
   GetTests(pid: string) {
     return this.db.list(this.uid + "/Porjects/" + pid + "/Tests/")
   }
